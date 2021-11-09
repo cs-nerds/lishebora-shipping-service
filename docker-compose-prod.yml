@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:12
+    restart: unless-stopped
+    container_name: pg_db
+    expose:
+      - 5432
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTRESS_USER: ${DB_USER}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - shipping-db:/var/lib/postgresql/data
+    networks:
+      - shipping-service
+
+  backend:
+    image: shipping-service-backend
+    container_name: shipping-service-backend
+    env_file: ./env/.env
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - db
+    expose:
+      - 80
+    ports:
+      - '4501:80'
+    command: uvicorn main:app --port 80 --host 0.0.0.0 --reload
+    volumes:
+      - .:/app
+    networks:
+      - shipping-service
+
+volumes:
+  shipping-db:
+
+networks:
+  shipping-service:
