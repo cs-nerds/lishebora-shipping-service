@@ -1,9 +1,8 @@
 from sqlalchemy.orm import Session
 
+from app.db import base  # noqa: F401
 from app.models.main import Country
 from app.schemas.countries import CreateCountrySchema
-from app.core.conf import settings
-from app.db import base  # noqa: F401
 
 # make sure all SQL Alchemy models are imported (app.db.base) before initializing DB
 # otherwise, SQL Alchemy might fail to initialize relationships properly
@@ -18,9 +17,5 @@ def init_db(db: Session) -> None:
 
     country = db.query(Country).filter(Country.name == "Kenya").scalar()
     if not country:
-        country_in = CreateCountrySchema(
-            name="Kenya",
-            code="254",
-            currency="KES"
-        )
+        country_in = CreateCountrySchema(name="Kenya", code="254", currency="KES")
         Country.create_from_schema(obj_in=country_in, session=db)  # noqa: F841

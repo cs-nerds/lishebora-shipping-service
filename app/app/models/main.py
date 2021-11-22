@@ -16,8 +16,9 @@ class Country(Base):
     code = Column(Integer, nullable=True, index=True, unique=True)
     currency = Column(String, default="KES", nullable=True)
     createdat = Column(DateTime, default=datetime.datetime.now)
-    updateat = Column(DateTime, default=datetime.datetime.now, onupdate=datetime.datetime.now)
-
+    updateat = Column(
+        DateTime, default=datetime.datetime.now, onupdate=datetime.datetime.now
+    )
 
 
 class Location(Base):
@@ -30,7 +31,9 @@ class Location(Base):
         ForeignKey("countries.uuid", ondelete="CASCADE"), nullable=False
     )
     createdat = Column(DateTime, default=datetime.datetime.now)
-    updatedat = Column(DateTime, default=datetime.datetime.now, onupdate=datetime.datetime.now)
+    updatedat = Column(
+        DateTime, default=datetime.datetime.now, onupdate=datetime.datetime.now
+    )
 
 
 class FuelCost(Base):
@@ -40,7 +43,9 @@ class FuelCost(Base):
     diesel_cost = Column(Float)
     currency = Column(String)
     createdat = Column(DateTime, default=datetime.datetime.now)
-    updatedat = Column(DateTime, default=datetime.datetime.now, onupdate=datetime.datetime.now)
+    updatedat = Column(
+        DateTime, default=datetime.datetime.now, onupdate=datetime.datetime.now
+    )
 
 
 class Shipment(Base):
@@ -61,4 +66,6 @@ class Shipment(Base):
     receiver_user_id = Column(UUID(as_uuid=True), index=True)
     status = Column(Enum(ShipmentStatusTypes), nullable=False)
     createdat = Column(DateTime, default=datetime.datetime.now)
-    updatedat = Column(DateTime, default=datetime.datetime.now, onupdate=datetime.datetime.now)
+    updatedat = Column(
+        DateTime, default=datetime.datetime.now, onupdate=datetime.datetime.now
+    )

@@ -1,7 +1,8 @@
-from typing import Optional
+from typing import List, Optional
 from uuid import UUID
-from typing import List
+
 from pydantic import BaseModel
+
 
 class BaseCountrySchema(BaseModel):
     name: Optional[str] = None
@@ -22,5 +23,6 @@ class UpdateCountrySchema(BaseCountrySchema):
 class GetCountrySchema(BaseCountrySchema):
     uuid: UUID
 
+
 class CountryListSchema(BaseModel):
-    __root__: List[GetCountrySchema] 
+    __root__: List[GetCountrySchema]
