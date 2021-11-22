@@ -18,3 +18,7 @@ WORKDIR /app/shipping/app
 
 ENV PYTHONPATH=/app/shipping/app
 
+EXPOSE 80
+
+CMD ["bash", "scripts/start-app.sh"]
+

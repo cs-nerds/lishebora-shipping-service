@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shipping-app
+  labels:
+    app: shipping
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: shipping
+  template:
+    metadata:
+      labels:
+        app: shipping
+    spec:
+      containers:
+        - image: jayczar/lishebora-shipping-service:0.1.0
+          name: shipping
+          envFrom:
+            - secretRef:
+                name: shipping-secret
+            # - configMapRef:
+            #     name: shipping-config
+          ports:
+            - containerPort: 80
+              name: uvicorn

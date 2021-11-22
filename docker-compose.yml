@@ -45,7 +45,7 @@ services:
       - 80
     ports:
       - '4501:80'
-    command: bash -c alembic upgrade head && scripts/initial.py && uvicorn main:app --port 80 --host 0.0.0.0 --reload
+    command: bash -c alembic upgrade head && scripts/init-data.sh && uvicorn main:app --port 80 --host 0.0.0.0 --reload
     volumes:
       - .:/app/shipping
     networks:
