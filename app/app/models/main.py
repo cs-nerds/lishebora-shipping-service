@@ -28,7 +28,9 @@ class Location(Base):
     longitude = Column(Float)
     latitude = Column(Float)
     country_uuid = Column(
-        ForeignKey("countries.uuid", ondelete="CASCADE"), nullable=False
+        UUID(as_uuid=True),
+        ForeignKey("countries.uuid", ondelete="CASCADE"),
+        nullable=False,
     )
     createdat = Column(DateTime, default=datetime.datetime.now)
     updatedat = Column(
@@ -52,10 +54,14 @@ class Shipment(Base):
     __tablename__ = "shipments"
     uuid = Column(UUID, primary_key=True, default=uuid.uuid4)
     from_location = Column(
-        ForeignKey("locations.uuid", ondelete="CASCADE"), nullable=False
+        UUID(as_uuid=True),
+        ForeignKey("locations.uuid", ondelete="CASCADE"),
+        nullable=False,
     )
     to_location = Column(
-        ForeignKey("locations.uuid", ondelete="CASCADE"), nullable=False
+        UUID(as_uuid=True),
+        ForeignKey("locations.uuid", ondelete="CASCADE"),
+        nullable=False,
     )
     distance_km = Column(Float, nullable=False)
     total_cost = Column(Float, nullable=False)

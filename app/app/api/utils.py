@@ -29,5 +29,5 @@ class ErrorResponseSchema(BaseModel):
     error: str
 
 
-def common_list_params(limit: int = 10, skip: int = 0, q: str = ""):
+def common_list_params(limit: int = 10, skip: int = 0, q: str = "") -> dict:
     return {"limit": limit, "skip": skip, "q": q}

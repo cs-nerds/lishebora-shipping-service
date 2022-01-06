@@ -38,7 +38,10 @@ def list_locations(
 ) -> Any:
     instances = (
         db.query(Location)
-        .filter(Location.country_uuid == country_uuid)
+        .filter(
+            Location.country_uuid == country_uuid,
+            Location.name.contains(list_params.get("q")),
+        )
         .limit(limit=list_params.get("limit"))
         .offset(list_params.get("skip"))
         .all()
