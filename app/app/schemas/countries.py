@@ -26,3 +26,9 @@ class GetCountrySchema(BaseCountrySchema):
 
 class CountryListSchema(BaseModel):
     __root__: List[GetCountrySchema]
+
+
+class CountryInDB(BaseCountrySchema):
+    uuid: UUID
+    class Config:
+        orm_mode = True
