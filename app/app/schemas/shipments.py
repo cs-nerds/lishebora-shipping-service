@@ -3,7 +3,7 @@ from enum import Enum
 from typing import Optional
 from uuid import UUID
 
-from pydantic import BaseModel
+from pydantic import BaseModel, root_validator
 
 
 class ShipmentStatusTypes(str, Enum):
@@ -32,7 +32,30 @@ class CreateShipmentSchema(BaseShipmentSchema):
     to_location: UUID
 
 
-class UpdateShipmentSchema(BaseShipmentSchema):
+class CreateShipmentDBSchema(CreateShipmentSchema):
+    distance_km: float
+    total_cost: Optional[float] = 0.0
+
+    @root_validator(pre=False)
+    def _set_fields(cls, values: dict) -> dict:
+        """This is a validator that sets the field values based on the
+        the shipment distance in km.
+
+        Args:
+            values (dict): Stores the attributes of the CreateShipmentDBSchema object.
+
+        Returns:
+            dict: The attributes of the shipment object with the shipment's fields.
+        """
+        values["total_cost"] = round((values["distance_km"] * 25.0), 2)
+        return values
+
+
+class UpdateShipmentSchema(CreateShipmentSchema):
+    uuid: UUID
+
+
+class UpdateShipmentDBSchema(CreateShipmentDBSchema):
     uuid: UUID
 
 
@@ -40,3 +63,8 @@ class GetShipmentSchema(BaseShipmentSchema):
     uuid: UUID
     distance_km: Optional[float] = None
     total_cost: Optional[float] = None
+
+
+class ShipmentInDB(GetShipmentSchema):
+    class Config:
+        orm_mode = True

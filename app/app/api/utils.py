@@ -1,31 +1,42 @@
-from typing import Any, Dict, List, Optional, Union
+from enum import Enum
+from typing import Generic, Optional, TypeVar
 
 from pydantic import BaseModel
+from pydantic.generics import GenericModel
+
+DataType = TypeVar("DataType")
 
 
-class ResponseBaseSchema(BaseModel):
-    status: str
-    message: Optional[str]
-    result: Optional[Union[str, List[Dict[str, Any]], Dict[str, Any]]]
+class ResponseStatusTypes(str, Enum):
+    success = "success"
+    error = "error"
+
+
+class ResponseWrapperBaseSchema(GenericModel, Generic[DataType]):
+    status: ResponseStatusTypes
+    message: Optional[str] = None
+    limit: Optional[int] = None
+    skip: Optional[int] = None
+    result: Optional[DataType] = None
     error: Optional[str]
-    skip: Optional[int]
-    limit: Optional[int]
 
 
-class SuccessResponseSchema(BaseModel):
-    status: str = "success"
+class SuccessResponseListSchema(GenericModel, Generic[DataType]):
+    status: Optional[str] = ResponseStatusTypes.success.name
     message: str
-    result: Dict[str, Any]
+    limit: Optional[int] = None
+    skip: Optional[int] = None
+    result: Optional[DataType] = None
 
 
-class SuccessResponseListSchema(BaseModel):
-    status: str = "success"
+class SuccessResponseSchema(GenericModel, Generic[DataType]):
+    status: Optional[str] = ResponseStatusTypes.success.name
     message: str
-    result: List[Any]
+    result: Optional[DataType] = None
 
 
 class ErrorResponseSchema(BaseModel):
-    status: str = "error"
+    status: Optional[str] = ResponseStatusTypes.error.name
     error: str
 
 
