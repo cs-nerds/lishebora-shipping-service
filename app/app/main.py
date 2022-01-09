@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+
 from app.api.v1_endpoints.index import router as api_router
 from app.core.conf import settings
 
