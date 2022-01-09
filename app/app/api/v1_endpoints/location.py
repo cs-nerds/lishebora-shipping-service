@@ -8,8 +8,12 @@ from fastapi.routing import APIRouter
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_db
-from app.api.utils import (ErrorResponseSchema, SuccessResponseListSchema,
-                           SuccessResponseSchema, common_list_params)
+from app.api.utils import (
+    ErrorResponseSchema,
+    SuccessResponseListSchema,
+    SuccessResponseSchema,
+    common_list_params,
+)
 from app.models.main import Location
 from app.schemas.locations import CreateLocationSchema, LocationInDB
 
@@ -27,8 +31,7 @@ def create_location(
 ) -> Any:
     instance = Location.create_from_schema(obj_in=location, session=db)
     return SuccessResponseSchema[LocationInDB](
-        message="Location created successfully",
-        result=instance,
+        message="Location created successfully", result=instance,
     )
 
 
@@ -57,7 +60,10 @@ def list_locations(
     )
 
     response = SuccessResponseListSchema[List[LocationInDB]](
-        message="Location list retrieved successfully", limit=limit, skip=skip, result=instances
+        message="Location list retrieved successfully",
+        limit=limit,
+        skip=skip,
+        result=instances,
     ).dict(exclude_none=True)
     return response
 
@@ -67,7 +73,7 @@ def list_locations(
     summary="Get details of a specific location",
     response_model=SuccessResponseSchema[LocationInDB],
     status_code=200,
-    responses={404: {"model": ErrorResponseSchema}}
+    responses={404: {"model": ErrorResponseSchema}},
 )
 def get_location_details(location_uuid: UUID, db: Session = Depends(get_db)) -> Any:
     instance = db.query(Location).filter(Location.uuid == location_uuid).first()
