@@ -45,14 +45,10 @@ services:
       - 80
     ports:
       - '4501:80'
-    command: bash -c alembic upgrade head && scripts/init-data.sh && uvicorn main:app --port 80 --host 0.0.0.0 --reload
     volumes:
       - .:/app/shipping
     networks:
       - shipping-service
-    labels:
-      - 'traefik.enable=true'
-      - 'traefik.http.routers.shipping-service.rule=(Host(`shipping.localhost`) && PathPrefix(`/api`))'
 
 volumes:
   shipping-db:

@@ -24,3 +24,10 @@ class UpdateLocationSchema(BaseLocationSchema):
 
 class GetLocationSchema(BaseLocationSchema):
     uuid: UUID
+
+
+class LocationInDB(BaseLocationSchema):
+    uuid: UUID
+
+    class Config:
+        orm_mode = True

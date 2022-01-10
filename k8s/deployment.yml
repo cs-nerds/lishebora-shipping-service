@@ -15,7 +15,7 @@ spec:
         app: shipping
     spec:
       containers:
-        - image: jayczar/lishebora-shipping-service:0.1.0
+        - image: jayczar/lishebora-shipping-service:0.1.1
           name: shipping
           envFrom:
             - secretRef:

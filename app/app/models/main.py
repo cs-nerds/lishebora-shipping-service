@@ -1,9 +1,11 @@
 import datetime
 import uuid
+from typing import Any
 
-from sqlalchemy import (Column, Date, DateTime, Enum, Float, ForeignKey,
-                        Integer, String, UniqueConstraint)
+from pydantic import BaseModel as BaseSchema
+from sqlalchemy import Column, Date, DateTime, Enum, Float, ForeignKey, Integer, String
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import Session
 
 from app.db.base_class import Base
 from app.schemas.shipments import ShipmentStatusTypes
@@ -28,7 +30,9 @@ class Location(Base):
     longitude = Column(Float)
     latitude = Column(Float)
     country_uuid = Column(
-        ForeignKey("countries.uuid", ondelete="CASCADE"), nullable=False
+        UUID(as_uuid=True),
+        ForeignKey("countries.uuid", ondelete="CASCADE"),
+        nullable=False,
     )
     createdat = Column(DateTime, default=datetime.datetime.now)
     updatedat = Column(
@@ -50,12 +54,16 @@ class FuelCost(Base):
 
 class Shipment(Base):
     __tablename__ = "shipments"
-    uuid = Column(UUID, primary_key=True, default=uuid.uuid4)
+    uuid = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     from_location = Column(
-        ForeignKey("locations.uuid", ondelete="CASCADE"), nullable=False
+        UUID(as_uuid=True),
+        ForeignKey("locations.uuid", ondelete="CASCADE"),
+        nullable=False,
     )
     to_location = Column(
-        ForeignKey("locations.uuid", ondelete="CASCADE"), nullable=False
+        UUID(as_uuid=True),
+        ForeignKey("locations.uuid", ondelete="CASCADE"),
+        nullable=False,
     )
     distance_km = Column(Float, nullable=False)
     total_cost = Column(Float, nullable=False)
@@ -69,3 +77,11 @@ class Shipment(Base):
     updatedat = Column(
         DateTime, default=datetime.datetime.now, onupdate=datetime.datetime.now
     )
+
+    def update_from_schema(self, updates_in: BaseSchema, session: Session) -> Any:
+        update_data = updates_in.dict(exclude_none=True)
+        for key in update_data.keys():
+            setattr(self, key, update_data.get(key))
+        session.commit()
+        session.refresh(self)
+        return self

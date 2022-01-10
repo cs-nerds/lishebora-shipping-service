@@ -1,0 +1,30 @@
+name: Build & Unit Tests
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: create env directory files
+        run: |
+          mkdir -p ./env
+      - name: copy env variables
+        run: |
+          cp sample.env ./env/.env && cp sample.env .env
+      - name: build docker image
+        run: |
+          docker-compose build --build-arg INSTALL_DEV=true
+      - name: start services
+        run: |
+          docker-compose up -d
+      - name: Health check
+        run: |
+          docker-compose ps
+      - name: Run tests with pytest
+        run: |
+          docker-compose exec -T backend bash scripts/test.sh
+      - name: check linting
+        run: |
+          docker-compose exec -T backend bash scripts/lint.sh

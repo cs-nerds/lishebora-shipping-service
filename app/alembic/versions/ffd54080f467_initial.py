@@ -1,8 +1,8 @@
 """initial
 
-Revision ID: c2494c336eb2
+Revision ID: ffd54080f467
 Revises: 
-Create Date: 2021-11-21 15:36:32.497443
+Create Date: 2022-01-07 11:05:11.275463
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision = "c2494c336eb2"
+revision = "ffd54080f467"
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -28,8 +28,8 @@ def upgrade():
         sa.Column("updateat", sa.DateTime(), nullable=True),
         sa.PrimaryKeyConstraint("uuid"),
     )
-    op.create_index(op.f("ix_countries_code"), "countries", ["code"], unique=False)
-    op.create_index(op.f("ix_countries_name"), "countries", ["name"], unique=False)
+    op.create_index(op.f("ix_countries_code"), "countries", ["code"], unique=True)
+    op.create_index(op.f("ix_countries_name"), "countries", ["name"], unique=True)
     op.create_table(
         "fuel_costs",
         sa.Column("uuid", postgresql.UUID(as_uuid=True), nullable=False),
@@ -57,7 +57,7 @@ def upgrade():
     op.create_index(op.f("ix_locations_name"), "locations", ["name"], unique=False)
     op.create_table(
         "shipments",
-        sa.Column("uuid", postgresql.UUID(), nullable=False),
+        sa.Column("uuid", postgresql.UUID(as_uuid=True), nullable=False),
         sa.Column("from_location", postgresql.UUID(as_uuid=True), nullable=False),
         sa.Column("to_location", postgresql.UUID(as_uuid=True), nullable=False),
         sa.Column("distance_km", sa.Float(), nullable=False),

@@ -1,7 +1,10 @@
 from typing import Generator
 
-from app.api.utils import (ErrorResponseSchema, SuccessResponseListSchema,
-                           SuccessResponseSchema)
+from app.api.utils import (
+    ErrorResponseSchema,
+    SuccessResponseListSchema,
+    SuccessResponseSchema,
+)
 from app.db.session import SessionLocal
 
 
