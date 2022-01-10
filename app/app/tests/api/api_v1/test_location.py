@@ -1,3 +1,4 @@
+import uuid
 from typing import Any
 
 from fastapi.testclient import TestClient
@@ -5,10 +6,10 @@ from sqlalchemy.orm import Session
 
 from app.core.conf import settings
 from app.models.main import Country
-from app.schemas.locations import CreateLocationSchema, UpdateLocationSchema
-from app.tests.utils.utils import random_float, random_lower_string
+from app.schemas.locations import CreateLocationSchema
 from app.tests.utils.location import create_random_location
-import uuid
+from app.tests.utils.utils import random_latitude, random_longitude, random_lower_string
+
 
 def test_create_location_ok(client: TestClient, db: Session) -> Any:
     url = f"{settings.API_V1_STR}/locations/create"
@@ -16,8 +17,8 @@ def test_create_location_ok(client: TestClient, db: Session) -> Any:
     location_name = random_lower_string()
     payload = CreateLocationSchema(
         name=location_name,
-        latitude=random_float(),
-        longitude=random_float(),
+        latitude=random_latitude(),
+        longitude=random_longitude(),
         country_uuid=test_country.uuid,
     )
     data = payload.dict()
@@ -33,10 +34,11 @@ def test_create_location_ok(client: TestClient, db: Session) -> Any:
     assert res_json.get("result").get("country_uuid") == str(test_country.uuid)
     assert res_json.get("result").get("name") == location_name
 
+
 def test_list_locations_ok(client: TestClient, db: Session) -> Any:
     url = f"{settings.API_V1_STR}/locations/list"
     test_country = db.query(Country).first()
-    params = {'country_uuid': test_country.uuid}
+    params = {"country_uuid": test_country.uuid}
     res = client.get(url, params=params)
 
     assert res.status_code == 200
@@ -50,11 +52,9 @@ def test_get_location_details_ok(client: TestClient, db: Session) -> Any:
     url = f"{settings.API_V1_STR}/locations/details"
     test_country = db.query(Country).first()
     test_location = create_random_location(
-        name=random_lower_string(),
-        country_uuid=test_country.uuid,
-        db=db,
+        name=random_lower_string(), country_uuid=test_country.uuid, db=db,
     )
-    params = {'location_uuid': test_location.uuid}
+    params = {"location_uuid": test_location.uuid}
     res = client.get(url, params=params)
 
     assert res.status_code == 200
@@ -65,15 +65,14 @@ def test_get_location_details_ok(client: TestClient, db: Session) -> Any:
     assert res_json.get("result").get("name") == test_location.name
     assert res_json.get("result").get("country_uuid") == str(test_location.country_uuid)
 
+
 def test_get_location_details_404(client: TestClient, db: Session) -> Any:
     url = f"{settings.API_V1_STR}/locations/details"
-    
-    params = {'location_uuid': uuid.uuid4()}
+
+    params = {"location_uuid": uuid.uuid4()}
     res = client.get(url, params=params)
 
     assert res.status_code == 404
     res_json = res.json()
     assert res_json.get("status") == "error"
     assert res_json.get("error") is not None
-    
-

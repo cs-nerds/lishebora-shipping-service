@@ -82,7 +82,7 @@ def update_shipment(
         logger.error(shipment.uuid)
         logger.error("NoResultFound: Error updating shipment, no shipment with that id")
         res = ErrorResponseSchema(error="No shipment found with that id")
-        return JSONResponse(jsonable_encoder(res), status_code=400)
+        return JSONResponse(jsonable_encoder(res), status_code=404)
 
 
 @router.get(
@@ -90,6 +90,7 @@ def update_shipment(
     summary="Get a specific shipment details",
     response_model=SuccessResponseSchema[ShipmentInDB],
     status_code=200,
+    responses={404: {"model": ErrorResponseSchema}},
 )
 def get_shipment_details(shipment_uuid: UUID, db: Session = Depends(get_db)) -> Any:
     try:
@@ -103,4 +104,4 @@ def get_shipment_details(shipment_uuid: UUID, db: Session = Depends(get_db)) -> 
         logger.error(shipment_uuid)
         logger.error("NoResultFound: Error getting shipment, no shipment with that id")
         res = ErrorResponseSchema(error="No shipment found with that id")
-        return JSONResponse(jsonable_encoder(res), status_code=400)
+        return JSONResponse(jsonable_encoder(res), status_code=404)

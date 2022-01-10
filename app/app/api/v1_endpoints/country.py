@@ -8,8 +8,12 @@ from fastapi.routing import APIRouter
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_db
-from app.api.utils import (ErrorResponseSchema, SuccessResponseListSchema,
-                           SuccessResponseSchema, common_list_params)
+from app.api.utils import (
+    ErrorResponseSchema,
+    SuccessResponseListSchema,
+    SuccessResponseSchema,
+    common_list_params,
+)
 from app.models.main import Country
 from app.schemas.countries import CountryInDB
 
@@ -20,19 +24,14 @@ router = APIRouter()
     "/list",
     summary="Get a list of all available countries",
     response_model=SuccessResponseListSchema[List[CountryInDB]],
-    status_code=200
+    status_code=200,
 )
 def list_countries(
     list_params: dict = Depends(common_list_params), db: Session = Depends(get_db)
 ) -> Any:
     limit = list_params.get("limit")
     skip = list_params.get("skip")
-    instances = (
-        db.query(Country)
-        .limit(limit=limit)
-        .offset(skip)
-        .all()
-    )
+    instances = db.query(Country).limit(limit=limit).offset(skip).all()
     response = SuccessResponseListSchema[List[CountryInDB]](
         message="Country list retrieved successfully",
         result=instances,

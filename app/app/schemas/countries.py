@@ -30,5 +30,6 @@ class CountryListSchema(BaseModel):
 
 class CountryInDB(BaseCountrySchema):
     uuid: UUID
+
     class Config:
         orm_mode = True

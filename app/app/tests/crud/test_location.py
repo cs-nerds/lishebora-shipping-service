@@ -32,8 +32,7 @@ def test_update_location_ok(db: Session) -> Any:
     )
 
     location_schema = UpdateLocationSchema(
-        name=random_lower_string(),
-        uuid=instance.uuid,
+        name=random_lower_string(), uuid=instance.uuid,
     )
 
     instance.update_from_schema(updates_in=location_schema, session=db)
